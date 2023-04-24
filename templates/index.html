@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Page</title>
+   
+	</div>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+		.center-container {
+				display: flex;
+				flex-wrap:wrap;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 20px;
+			}
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            padding: 10px;
+        }
+
+        td {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .files {
+            background-color: #ff7f50;
+        }
+
+        .dirs {
+            background-color: #87ceeb;
+        }
+
+        .space {
+            background-color: #90ee90;
+        }
+        td span {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #e93f3f;
+        }
+        .File{
+           
+           color: #3fe964;
+       }
+       .Log-out{
+            text-decoration: none;
+            font-weight: bold;
+            color: #e93f3f;
+       }
+     
+       .menu-item span {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.menu-item span:first-child {
+  color: #333;
+}
+
+.menu-item .Log-out {
+  color: #f00;
+  text-decoration: none;
+            font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Page</h1>
+        
+        {% if username %}
+           
+            <div  align="right" class="menu-item" >
+                <span>Welcome : {{ username }}</span>
+                <a href="/logout" class="Log-out">Log out</a>
+            </div>
+                <div class="center-container">
+                    <button class="files">{{ num_files }} files</button>
+                    <button class="dirs">{{ num_dirs }} directories</button>
+                    <button class="space">{{ space_used }} GB used</button>
+                </div>
+                <div class="center-container">
+                    <form action="/search" method="post">
+                        <label for="search-term">Search for:</label>
+                        <input type="text" id="search-term" name="search-term">
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
+                <br>
+                <div class="center-container">
+                    <a href="/download">Download home directory as ZIP</a>
+                </div>
+                <br>
+            
+                <div align="center">
+                    <p><strong>current working directory: </strong>{{ current_working_directory }}</p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Files</th>
+                            <th>Last Modified</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+                            <tr>
+                                {% if current_working_directory  != home_dir%}
+                                    <td><a href="/navigate?path=..">..</a></td>
+                                {% else %}
+                                    <td></td>
+                                {% endif%}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        
+                            {% for i in range(file_list|length-1) %}
+                            <tr>
+                                {% set item = file_list[i] %}
+                                {% set date = file_list_date[i+1] %}
+                                {% set size = file_list_size[i+1] %}
+                                
+                            {% if '.' not in item%}
+                                <td><span class="dir">dir</span></td>
+                                <td><strong><a href="/navigate?path={{current_working_directory + '/' + item}}">{{item}}</a></strong></td>
+                                
+                                {% else %}
+                                <td><span class="File">File</span></td>
+                                <td><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></td>
+
+                            {% endif%}
+                            <td>{{date}}</td>
+                            <td>{{size}}</td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+
+        {% else %}
+		    <p>You are not logged in. <a href="/login">Log in</a> to access your home directory.</p>
+	    {% endif %}
+    </div>
+</body>
+</html>
